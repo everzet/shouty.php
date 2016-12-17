@@ -15,11 +15,11 @@ use Shouty\Coordinate;
 
 class LocationContext implements Context, SnippetAcceptingContext
 {
-    private $shouty;
+    private $shoutyHelper;
 
-    public function setShouty($shouty)
+    public function setShoutyHelper($shoutyHelper)
     {
-        $this->shouty = $shouty;
+        $this->shoutyHelper = $shoutyHelper;
     }
 
     /**
@@ -27,7 +27,7 @@ class LocationContext implements Context, SnippetAcceptingContext
      */
     public function personIsAt($personName, $xCoord, $yCoord)
     {
-        $this->shouty->setLocation($personName, new Coordinate($xCoord, $yCoord));
+        $this->getShouty()->setLocation($personName, new Coordinate($xCoord, $yCoord));
     }
 
     /**
@@ -36,8 +36,13 @@ class LocationContext implements Context, SnippetAcceptingContext
     public function peopleAreLocatedAt(TableNode $peopleLocations)
     {
         foreach($peopleLocations as $personLocation) {
-            $this->shouty->setLocation($personLocation['name'], new Coordinate($personLocation['x'], $personLocation['y']));
+            $this->getShouty()->setLocation($personLocation['name'], new Coordinate($personLocation['x'], $personLocation['y']));
         }
 
+    }
+
+    private function getShouty()
+    {
+        return $this->shoutyHelper->getShouty();
     }
 }

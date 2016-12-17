@@ -11,13 +11,28 @@ use Behat\Behat\Context\ServiceContainer\ContextExtension;
 use Behat\Behat\Context\Initializer\ContextInitializer;
 use Behat\Behat\Context\Context;
 
+class ShoutyHelper
+{
+    public function getShouty()
+    {
+        if (!isset($this->shouty))
+            $this->shouty = new Shouty();
+        return $this->shouty;
+    }
+
+    public function reset()
+    {
+        unset($this->shouty);
+    }
+}
+
 class ShoutyInitializer implements ContextInitializer
 {
-    private $shouty;
+    private $shoutyHelper;
 
     public function __construct()
     {
-        $this->shouty = new Shouty();
+        $this->shoutyHelper = new ShoutyHelper();
     }
 
     public function supportsContext(Context $context)
@@ -27,7 +42,7 @@ class ShoutyInitializer implements ContextInitializer
 
     public function initializeContext(Context $context)
     {
-        $context->setShouty($this->shouty);
+        $context->setShoutyHelper($this->shoutyHelper);
     }
 }
 

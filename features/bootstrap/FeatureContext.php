@@ -16,11 +16,12 @@ use Shouty\Coordinate;
 class FeatureContext implements Context, SnippetAcceptingContext
 {
     const ARBITRARY_MESSAGE = 'Hello, world';
-    private $shouty;
+    private $shoutyHelper;
 
-    public function setShouty($shouty)
+    public function setShoutyHelper($shoutyHelper)
     {
-        $this->shouty = $shouty;
+        $shoutyHelper->reset();
+        $this->shoutyHelper = $shoutyHelper;
     }
 
     /**
@@ -28,7 +29,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function shouterShouts($shouterName)
     {
-        $this->shouty->shout($shouterName, self::ARBITRARY_MESSAGE);
+        $this->getShouty()->shout($shouterName, self::ARBITRARY_MESSAGE);
     }
 
     /**
@@ -36,7 +37,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function lucyShouldHearSean()
     {
-        PHPUnit::assertEquals(1, count($this->shouty->getMessagesHeardBy("Lucy")));
+        PHPUnit::assertEquals(1, count($this->getShouty()->getMessagesHeardBy("Lucy")));
     }
 
     /**
@@ -44,7 +45,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function lucyShouldHearNothing()
     {
-        PHPUnit::assertEquals(0, count($this->shouty->getMessagesHeardBy("Lucy")));
+        PHPUnit::assertEquals(0, count($this->getShouty()->getMessagesHeardBy("Lucy")));
     }
 
     /**
@@ -52,7 +53,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function listenerShouldNotHearShouter($listenerName, $shouterName)
     {
-        $messages = $this->shouty->getMessagesHeardBy($listenerName);
+        $messages = $this->getShouty()->getMessagesHeardBy($listenerName);
 
         PHPUnit::assertFalse(array_key_exists($shouterName, $messages), "Did not expect to hear: " . $shouterName . ", but did!");
     }
@@ -62,9 +63,14 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function lucyShouldHearShoutsFromSean($countOfShouts, $listenerName, $shouterName)
     {
-        $messages = $this->shouty->getMessagesHeardBy($listenerName);
+        $messages = $this->getShouty()->getMessagesHeardBy($listenerName);
         $messagesByShouter = $messages[$shouterName];
 
         PHPUnit::assertEquals(intval($countOfShouts), count($messagesByShouter));
+    }
+
+    private function getShouty()
+    {
+        return $this->shoutyHelper->getShouty();
     }
 }
