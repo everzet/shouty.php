@@ -17,9 +17,9 @@ class LocationContext implements Context, SnippetAcceptingContext
 {
     private $shouty;
 
-    public function __construct()
+    public function setShouty($shouty)
     {
-        $this->shouty = new Shouty();
+        $this->shouty = $shouty;
     }
 
     /**

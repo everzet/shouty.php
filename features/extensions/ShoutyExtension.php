@@ -1,5 +1,7 @@
 <?php
 
+require_once 'src/Shouty/Shouty.php';
+
 use Shouty\Shouty;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,8 +13,11 @@ use Behat\Behat\Context\Context;
 
 class ShoutyInitializer implements ContextInitializer
 {
+    private $shouty;
+
     public function __construct()
     {
+        $this->shouty = new Shouty();
     }
 
     public function supportsContext(Context $context)
@@ -22,6 +27,7 @@ class ShoutyInitializer implements ContextInitializer
 
     public function initializeContext(Context $context)
     {
+        $context->setShouty($this->shouty);
     }
 }
 
