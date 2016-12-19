@@ -12,27 +12,44 @@ class Shouty
     public function setLocation($personName, $location)
     {
         $this->locationsByPersonName[$personName] = $location;
+        $this->messagesByPersonName[$personName] = [];
     }
 
     public function shout($shouterName, $message)
     {
-        if (isset($this->messagesByPersonName[$shouterName])) {
-            $this->messagesByPersonName[$shouterName][] = $message;
-        } else {
-            $this->messagesByPersonName[$shouterName] = [$message];
-        }
+        $this->messagesByPersonName[$shouterName][] = $message;
     }
 
     public function getMessagesHeardBy($listenerName)
     {
-        $result = [];
+        return array_filter($this->messagesByPersonName, $this->filterPeopleWithinRangeOf($listenerName), ARRAY_FILTER_USE_KEY);
+    }
 
-        foreach ($this->messagesByPersonName as $shouterName => $messages) {
-            $distance = $this->locationsByPersonName[$listenerName]->distanceFrom($this->locationsByPersonName[$shouterName]);
-            if ($distance < self::MESSAGE_RANGE && $listenerName != $shouterName) {
-                $result[$shouterName] = $messages;
-            }
-        }
-        return $result;
+    private function filterPeopleWithinRangeOf($firstPersonName)
+    {
+        return function ($secondPersonName) use ($firstPersonName) {
+            return $this->areDifferentPeople($firstPersonName, $secondPersonName)
+                && $this->arePeopleWithinRange($firstPersonName, $secondPersonName);
+        };
+    }
+
+    private function areDifferentPeople($firstPersonName, $secondPersonName)
+    {
+        return $firstPersonName !== $secondPersonName;
+    }
+
+    private function arePeopleWithinRange($firstPersonName, $secondPersonName)
+    {
+        return $this->distanceBetween($firstPersonName, $secondPersonName)->isLessThan($this->messageRange());
+    }
+
+    private function distanceBetween($firstPersonName, $secondPersonName)
+    {
+        return $this->locationsByPersonName[$firstPersonName]->distanceFrom($this->locationsByPersonName[$secondPersonName]);
+    }
+
+    private function messageRange()
+    {
+        return new Distance(self::MESSAGE_RANGE);
     }
 }

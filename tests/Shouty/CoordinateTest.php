@@ -11,14 +11,13 @@ class CoordinateTest extends TestCase
     {
         $a = new Coordinate(0, 0);
         $b = new Coordinate(1000, 0);
-        $this->assertEquals(1000, $a->distanceFrom($b));
+        $this->assertEquals(new Distance(1000), $a->distanceFrom($b));
     }
 
     public function testItCalculatesTheDistanceFromAnotherCoordinateAlongYAxis()
     {
         $a = new Coordinate(0, 200);
         $b = new Coordinate(0, 500);
-        $this->assertEquals(300, $a->distanceFrom($b));
+        $this->assertEquals(new Distance(300), $a->distanceFrom($b));
     }
-
 }

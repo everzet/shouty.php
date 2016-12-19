@@ -18,6 +18,6 @@ class Coordinate
         $xSquared = pow($other->x - $this->x, 2);
         $ySquared = pow($other->y - $this->y, 2);
 
-        return sqrt($xSquared + $ySquared);
+        return new Distance(sqrt($xSquared + $ySquared));
     }
 }
