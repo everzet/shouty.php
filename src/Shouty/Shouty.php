@@ -6,12 +6,17 @@ class Shouty
 {
     const MESSAGE_RANGE = 1000;
 
-    private $locationsByPersonName = [];
+    private $map;
     private $messagesByPersonName = [];
+
+    public function __construct()
+    {
+        $this->map = new Map();
+    }
 
     public function setLocation($personName, $location)
     {
-        $this->locationsByPersonName[$personName] = $location;
+        $this->map->setLocation($personName, $location);
         $this->messagesByPersonName[$personName] = [];
     }
 
@@ -28,24 +33,8 @@ class Shouty
     private function filterPeopleWithinRangeOf($firstPersonName)
     {
         return function ($secondPersonName) use ($firstPersonName) {
-            return $this->areDifferentPeople($firstPersonName, $secondPersonName)
-                && $this->arePeopleWithinRange($firstPersonName, $secondPersonName);
+            return in_array($secondPersonName, $this->map->peopleAround($firstPersonName, $this->messageRange()));
         };
-    }
-
-    private function areDifferentPeople($firstPersonName, $secondPersonName)
-    {
-        return $firstPersonName !== $secondPersonName;
-    }
-
-    private function arePeopleWithinRange($firstPersonName, $secondPersonName)
-    {
-        return $this->distanceBetween($firstPersonName, $secondPersonName)->isLessThan($this->messageRange());
-    }
-
-    private function distanceBetween($firstPersonName, $secondPersonName)
-    {
-        return $this->locationsByPersonName[$firstPersonName]->distanceFrom($this->locationsByPersonName[$secondPersonName]);
     }
 
     private function messageRange()
