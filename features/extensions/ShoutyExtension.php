@@ -1,7 +1,5 @@
 <?php
 
-require_once 'src/Shouty/Shouty.php';
-
 use Shouty\Shouty;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

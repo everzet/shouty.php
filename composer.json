@@ -7,6 +7,9 @@
     "config": {
         "bin-dir": "bin/"
     },
-    "require": {
+    "autoload": {
+        "psr-0": {
+            "Shouty": ["src/", "tests/"]
+        }
     }
 }
