@@ -23,11 +23,19 @@ class LocationContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given :personName is at [:xCoord, :yCoord]
+     * @Transform /\[(\d+), (\d+)\]/
      */
-    public function personIsAt($personName, $xCoord, $yCoord)
+    public function transformCoords($xCoord, $yCoord)
     {
-        $this->getShouty()->setLocation($personName, new Coordinate($xCoord, $yCoord));
+        return new Coordinate($xCoord, $yCoord);
+    }
+
+    /**
+     * @Given /^(\w+) is at (\[\d+, \d+\])$/
+     */
+    public function personIsAt($personName, Coordinate $coordinate)
+    {
+        $this->getShouty()->setLocation($personName, $coordinate);
     }
 
     /**
